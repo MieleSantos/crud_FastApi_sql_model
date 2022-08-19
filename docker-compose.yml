@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: db_fastapi
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=faculdade
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+    command:
+      [
+        "postgres",
+        "-c",
+        "log_statement=all",
+        "-c",
+        "logging_collector=on"
+      ]
+
+volumes:
+  db_data:
