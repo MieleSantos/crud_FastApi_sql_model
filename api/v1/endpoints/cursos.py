@@ -1,13 +1,14 @@
 from typing import List
 
-from core.deps import get_session
 from fastapi import APIRouter, Depends, HTTPException, Response, status
-from models.curso_model import CursoModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
 # Bypass warning SQLModel select
 from sqlmodel.sql.expression import Select, SelectOfScalar
+
+from core.deps import get_session
+from models.curso_model import CursoModel
 
 SelectOfScalar.inherit_cache = True  # type: ignore
 Select.inherit_cache = True  # type: ignore
@@ -17,7 +18,9 @@ Select.inherit_cache = True  # type: ignore
 router = APIRouter()
 
 
-@router.get("/{curso_id}", response_model=CursoModel, status_code=status.HTTP_200_OK)
+@router.get(
+    "/{curso_id}", response_model=CursoModel, status_code=status.HTTP_200_OK
+)
 async def get_curso(curso_id: int, db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(CursoModel).filter(CursoModel.id == curso_id)
@@ -44,10 +47,16 @@ async def get_cursos(db: AsyncSession = Depends(get_session)):
         return cursos
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=CursoModel)
-async def post_curso(curso: CursoModel, db: AsyncSession = Depends(get_session)):
+@router.post(
+    "/", status_code=status.HTTP_201_CREATED, response_model=CursoModel
+)
+async def post_curso(
+    curso: CursoModel, db: AsyncSession = Depends(get_session)
+):
 
-    novo_curso = CursoModel(titulo=curso.titulo, aulas=curso.aulas, horas=curso.horas)
+    novo_curso = CursoModel(
+        titulo=curso.titulo, aulas=curso.aulas, horas=curso.horas
+    )
 
     db.add(novo_curso)
     await db.commit()
