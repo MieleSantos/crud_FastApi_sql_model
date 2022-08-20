@@ -39,3 +39,9 @@ Para ver a documentação da api, com ela executando, basta acessar pelo navegad
 
 
 ![images/curso_api2.png](images/curso_api2.png)
+
+## Github Action
+
+GitHub Actions é uma plataforma de integração contínua e entrega contínua (CI/CD) que permite automatizar a sua compilação, testar e pipeline de implantação.
+
+- A pipeline vai aplica formatação de codigo usando `black`, `isort` e `flacke8`, no caso do flacke8 caso algo não esteja de acordo, ela quebra
