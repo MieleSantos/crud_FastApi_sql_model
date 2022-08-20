@@ -1,7 +1,5 @@
 from typing import List
-from unittest import result
 
-from core.database import Session
 from core.deps import get_session
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from models.curso_model import CursoModel
@@ -30,7 +28,8 @@ async def get_curso(curso_id: int, db: AsyncSession = Depends(get_session)):
             return curso
         else:
             raise HTTPException(
-                detail="Curso não encontrado", status_code=status.HTTP_404_NOT_FOUND
+                detail="Curso não encontrado",
+                status_code=status.HTTP_404_NOT_FOUND,
             )
 
 
@@ -70,12 +69,15 @@ async def delete_curso(curso_id: int, db: AsyncSession = Depends(get_session)):
             return Response(status_code=status.HTTP_204_NO_CONTENT)
         else:
             raise HTTPException(
-                detail="Curso não encontrado", status_code=status.HTTP_404_NOT_FOUND
+                detail="Curso não encontrado",
+                status_code=status.HTTP_404_NOT_FOUND,
             )
 
 
 @router.put(
-    "/{curso_id}", response_model=CursoModel, status_code=status.HTTP_202_ACCEPTED
+    "/{curso_id}",
+    response_model=CursoModel,
+    status_code=status.HTTP_202_ACCEPTED,
 )
 async def put_curso(
     curso_id: int, curso: CursoModel, db: AsyncSession = Depends(get_session)
@@ -94,5 +96,6 @@ async def put_curso(
             return curso_up
         else:
             raise HTTPException(
-                detail="Curso não encontrado", status_code=status.HTTP_404_NOT_FOUND
+                detail="Curso não encontrado",
+                status_code=status.HTTP_404_NOT_FOUND,
             )
