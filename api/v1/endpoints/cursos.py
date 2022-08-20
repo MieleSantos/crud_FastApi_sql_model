@@ -19,6 +19,32 @@ Select.inherit_cache = True  # type: ignore
 router = APIRouter()
 
 
+@router.get("/{curso_id}", response_model=CursoModel, status_code=status.HTTP_200_OK)
+async def get_curso(curso_id: int, db: AsyncSession = Depends(get_session)):
+    async with db as session:
+        query = select(CursoModel).filter(CursoModel.id == curso_id)
+        result = await session.execute(query)
+        curso = result.scalar_one_or_none()
+
+        if curso:
+            return curso
+        else:
+            raise HTTPException(
+                detail="Curso não encontrado", status_code=status.HTTP_404_NOT_FOUND
+            )
+
+
+@router.get("/", response_model=List[CursoModel])
+async def get_cursos(db: AsyncSession = Depends(get_session)):
+
+    async with db as session:
+        query = select(CursoModel)
+        result = await session.execute(query)
+        cursos: List[CursoModel] = result.scalars().all()
+
+        return cursos
+
+
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=CursoModel)
 async def post_curso(curso: CursoModel, db: AsyncSession = Depends(get_session)):
 
@@ -28,17 +54,6 @@ async def post_curso(curso: CursoModel, db: AsyncSession = Depends(get_session))
     await db.commit()
 
     return novo_curso
-
-
-@router.get("/", response_model=List[CursoModel])
-async def get_curso(db: AsyncSession = Depends(get_session)):
-
-    async with db as session:
-        query = select(CursoModel)
-        result = await session.execute(query)
-        cursos: List[CursoModel] = result.scalars().all()
-
-        return cursos
 
 
 @router.delete("/{curso_id}", status_code=status.HTTP_204_NO_CONTENT)
